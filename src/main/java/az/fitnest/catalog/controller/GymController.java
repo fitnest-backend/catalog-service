@@ -7,6 +7,7 @@ import az.fitnest.catalog.dto.response.GymCategoryCountResponse;
 import az.fitnest.catalog.dto.response.GymCountResponse;
 import az.fitnest.catalog.dto.response.GymDetailResponse;
 import az.fitnest.catalog.dto.response.GymDetailResponseV2;
+import az.fitnest.catalog.dto.response.GymDetailResponseV3;
 import az.fitnest.catalog.dto.response.GymEntranceEligibilityResponse;
 import az.fitnest.catalog.dto.response.GymEntranceScanResponse;
 import az.fitnest.catalog.dto.response.GymImageResponse;
@@ -241,6 +242,24 @@ public class GymController {
             @Parameter(description = "İdman zalının ID-si") @PathVariable Long gymId) {
         Long userId = UserContext.extractUserId(principal);
         return ResponseEntity.ok(this.gymReadService.getGymDetailV2(userId, gymId));
+    }
+
+    @GetMapping("/v3/gyms/{gymId:\\d+}")
+    @Operation(
+            summary = "İdman zalı About təfərrüatları (V3)",
+            description = "Yalnız About/header üçün yüngül payload: açıq/bağlı, məsafə, loqo, başlanğıc qiymət və amenities. İş saatları, abunəliklər, rəylər, məşqçilər və qalereya ayrı ucluqlardan yüklənir."
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "İdman zalı təfərrüatları uğurla əldə edildi", content = {@Content(schema = @Schema(implementation = GymDetailResponseV3.class))}),
+            @ApiResponse(responseCode = "404", description = "İdman zalı tapılmadı")
+    })
+    public ResponseEntity<GymDetailResponseV3> getGymDetailV3(
+            @AuthenticationPrincipal Object principal,
+            @Parameter(description = "İdman zalının ID-si") @PathVariable Long gymId,
+            @Parameter(description = "İstifadəçinin enliyi (latitude)") @RequestParam(value = "lat", required = false) Double lat,
+            @Parameter(description = "İstifadəçinin uzunluğu (longitude)") @RequestParam(value = "lng", required = false) Double lng) {
+        Long userId = UserContext.extractUserId(principal);
+        return ResponseEntity.ok(this.gymReadService.getGymDetailV3(userId, gymId, lat, lng));
     }
 
     @GetMapping("/v2/gyms")

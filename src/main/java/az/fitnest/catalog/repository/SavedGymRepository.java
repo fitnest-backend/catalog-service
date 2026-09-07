@@ -24,6 +24,8 @@ public interface SavedGymRepository extends JpaRepository<SavedGym, Long> {
 
     boolean existsByGymId(Long gymId);
 
+    boolean existsByUserIdAndGymId(Long userId, Long gymId);
+
     @Query("SELECT s.gym.id FROM SavedGym s WHERE s.userId = :userId AND s.gym.id IN :gymIds")
     List<Long> findGymIdsByUserIdAndGymIdIn(@Param("userId") Long userId, @Param("gymIds") List<Long> gymIds);
 }

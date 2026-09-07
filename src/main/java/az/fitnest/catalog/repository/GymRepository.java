@@ -50,6 +50,19 @@ public interface GymRepository
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"address", "mainCategories", "subCategories", "subscriptions", "subscriptions.supportedServices", "rooms", "rooms.images", "generalWorkHours", "workHoursWoman", "workHoursMan", "restDays"})
     public Optional<Gym> findWithDetailsById(Long id);
 
+    @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {
+            "address",
+            "mainCategories",
+            "subCategories",
+            "subscriptions",
+            "subscriptions.supportedServices",
+            "generalWorkHours",
+            "workHoursWoman",
+            "workHoursMan",
+            "restDays"
+    })
+    Optional<Gym> findAboutDetailById(Long id);
+
     @org.springframework.data.jpa.repository.Query("SELECT g FROM Gym g WHERE (LOWER(g.name) LIKE LOWER(CONCAT('%', CAST(:q AS string), '%')) OR LOWER(g.description) LIKE LOWER(CONCAT('%', CAST(:q AS string), '%')) OR LOWER(g.address.addressText) LIKE LOWER(CONCAT('%', CAST(:q AS string), '%')))")
     public org.springframework.data.domain.Page<Gym> findByNameOrDescriptionContainingIgnoreCase(
             @org.springframework.data.repository.query.Param("q") String q,

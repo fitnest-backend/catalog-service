@@ -81,6 +81,7 @@ public class GymReadServiceImpl implements az.fitnest.catalog.service.GymReadSer
     private final az.fitnest.catalog.client.StorageGrpcClient storageGrpcClient;
     private final java.util.concurrent.Executor taskExecutor;
     private final az.fitnest.catalog.service.GymEntranceService gymEntranceService;
+    private final GymDetailV3Service gymDetailV3Service;
 
     @org.springframework.beans.factory.annotation.Autowired
     @org.springframework.context.annotation.Lazy
@@ -1794,6 +1795,12 @@ public class GymReadServiceImpl implements az.fitnest.catalog.service.GymReadSer
                 return java.util.Collections.singletonList(id);
             }
         });
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public GymDetailResponseV3 getGymDetailV3(Long userId, Long gymId, Double lat, Double lng) {
+        return gymDetailV3Service.load(userId, gymId, lat, lng, getUserLanguage(userId));
     }
 
     @Override

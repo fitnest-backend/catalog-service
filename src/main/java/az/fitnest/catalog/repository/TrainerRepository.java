@@ -14,6 +14,9 @@ public interface TrainerRepository
     @Query(value = "SELECT t FROM Trainer t WHERE t.gymId = :gymId")
     public Page<Trainer> findByGymId(@Param(value = "gymId") Long gymId, Pageable pageable);
 
+    @Query("SELECT t FROM Trainer t LEFT JOIN FETCH t.profession WHERE t.gymId = :gymId ORDER BY t.id ASC")
+    java.util.List<Trainer> findPreviewByGymId(@Param("gymId") Long gymId, Pageable pageable);
+
     @Modifying
     @Transactional
     @Query("UPDATE Trainer t SET t.profession = NULL")

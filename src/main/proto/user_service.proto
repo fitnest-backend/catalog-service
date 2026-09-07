@@ -10,6 +10,7 @@ option java_outer_classname = "UserServiceProto";
 
 service UserService {
   rpc GetUserById(GetUserByIdRequest) returns (UserResponse);
+  rpc GetUsersByIds(GetUsersByIdsRequest) returns (GetUsersByIdsResponse);
   rpc UpdateUserProfile(UpdateUserProfileRequest) returns (UserResponse);
   rpc UpdateProfileImage(UpdateProfileImageRequest) returns (UserResponse);
   rpc UpdateSetupRequired(UpdateSetupRequiredRequest) returns (UserResponse);
@@ -19,6 +20,14 @@ service UserService {
 
 message GetUserByIdRequest {
   int64 user_id = 1;
+}
+
+message GetUsersByIdsRequest {
+  repeated int64 user_ids = 1;
+}
+
+message GetUsersByIdsResponse {
+  repeated UserResponse users = 1;
 }
 
 message UserResponse {

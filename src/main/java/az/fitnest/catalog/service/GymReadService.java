@@ -49,6 +49,7 @@ public interface GymReadService {
 
     // V2 APIs
     GymDetailResponseV2 getGymDetailV2(Long userId, Long gymId);
+    GymDetailResponseV3 getGymDetailV3(Long userId, Long gymId, Double lat, Double lng);
     PaginatedResponse<GymMainPageResponseV2> getGymsV2(Long userId, String q, String type, Long categoryId, Long subscriptionId, int page, int pageSize, Double userLat, Double userLng, String sortDir);
     GymInfoAdminResponseV2 getGymDetailsAdminV2(Long gymId);
     GymSubscriptionsAdminResponseV2 getGymSubscriptionsV2(Long gymId);
