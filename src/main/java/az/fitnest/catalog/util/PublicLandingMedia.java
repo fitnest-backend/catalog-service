@@ -6,6 +6,8 @@ public final class PublicLandingMedia {
 
     public static final String PUBLIC_MEDIA_PATH = "/api/v1/public/landing/media/";
     private static final Pattern FILE_ID = Pattern.compile("^[1-9][0-9]{0,31}$");
+    private static final Pattern FILE_ID_IN_PATH = Pattern.compile(
+            "(?:/api/v1)?/(?:media/stream|public/landing/media)/([1-9][0-9]{0,31})(?:[/?].*)?$");
 
     private PublicLandingMedia() {
     }
@@ -19,6 +21,10 @@ public final class PublicLandingMedia {
             return null;
         }
         String trimmed = url.trim();
+        java.util.regex.Matcher path = FILE_ID_IN_PATH.matcher(trimmed);
+        if (path.find()) {
+            return path.group(1);
+        }
         int slash = trimmed.lastIndexOf('/');
         String candidate = slash >= 0 ? trimmed.substring(slash + 1) : trimmed;
         int query = candidate.indexOf('?');
