@@ -1,6 +1,7 @@
 package az.fitnest.catalog.repository;
 
 import az.fitnest.catalog.model.entity.Gym;
+import az.fitnest.catalog.model.enums.GymStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -49,6 +50,8 @@ public interface GymRepository
 
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {"address", "mainCategories", "subCategories", "subscriptions", "subscriptions.supportedServices", "rooms", "rooms.images", "generalWorkHours", "workHoursWoman", "workHoursMan", "restDays"})
     public Optional<Gym> findWithDetailsById(Long id);
+
+    long countByStatus(GymStatus status);
 
     @org.springframework.data.jpa.repository.EntityGraph(attributePaths = {
             "address",

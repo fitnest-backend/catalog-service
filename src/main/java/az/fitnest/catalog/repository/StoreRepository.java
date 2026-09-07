@@ -33,6 +33,9 @@ public interface StoreRepository
     @Query(value = "SELECT s FROM Store s")
     public Page<Store> findAllWithAssociations(Pageable var1);
 
+    @EntityGraph(attributePaths = {"discounts", "images"})
+    Page<Store> findByStatusIgnoreCase(String status, Pageable pageable);
+
     @Query(value = "SELECT s FROM Store s WHERE EXISTS (SELECT 1 FROM s.discounts d)")
     public Page<Store> findDiscountedStores(Pageable var1);
 

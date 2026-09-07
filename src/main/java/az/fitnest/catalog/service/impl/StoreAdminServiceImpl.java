@@ -57,7 +57,7 @@ public class StoreAdminServiceImpl implements StoreAdminService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details", "landing-stores", "landing-store-detail"}, allEntries = true)
     public Long createMarketStep1(String name, MultipartFile photo) {
 
         String coverUrl = uploadAndGetUrl(photo);
@@ -74,7 +74,7 @@ public class StoreAdminServiceImpl implements StoreAdminService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details", "landing-stores", "landing-store-detail"}, allEntries = true)
     public void createMarketStep2(Long id, StoreStep2Request request) {
 
         Store store = findById(id);
@@ -113,7 +113,7 @@ public class StoreAdminServiceImpl implements StoreAdminService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details", "landing-stores", "landing-store-detail"}, allEntries = true)
     public void createMarketStep3(Long id, StoreStep3Request request) {
 
         // 1. Atomically delete all existing store discount rows via bulk native query to avoid row-by-row cascading overhead and version locking conflicts
@@ -138,7 +138,7 @@ public class StoreAdminServiceImpl implements StoreAdminService {
     }
 
     @Override
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details", "landing-stores", "landing-store-detail"}, allEntries = true)
     public void updateStoreStatus(Long storeId, String status) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new RuntimeException("Store not found with ID: " + storeId));
@@ -215,7 +215,7 @@ public class StoreAdminServiceImpl implements StoreAdminService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details", "landing-stores", "landing-store-detail"}, allEntries = true)
     public void updateStore(Long id, StoreUpdateRequest request, MultipartFile photo) {
 
         Store store = findById(id);
@@ -290,7 +290,7 @@ public class StoreAdminServiceImpl implements StoreAdminService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "admin-store-details", "landing-stores", "landing-store-detail"}, allEntries = true)
     public void deleteStore(Long id) {
 
         Store store = storeRepository.findByIdWithAssociations(id)
