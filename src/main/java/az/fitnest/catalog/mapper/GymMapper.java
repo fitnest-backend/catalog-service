@@ -8,7 +8,6 @@ import az.fitnest.catalog.dto.response.ProfessionResponse;
 import az.fitnest.catalog.model.entity.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public final class GymMapper {
 
@@ -251,26 +250,30 @@ public final class GymMapper {
                 .build();
     }
 
-    public static String toWorkHoursText(java.util.Collection<GymWorkHour> workHours, String lang) {
+    public static List<String> toWorkHoursLines(java.util.Collection<GymWorkHour> workHours, String lang) {
         if (workHours == null || workHours.isEmpty()) {
+            return List.of();
+        }
+        return toGroupedWorkHourDtos(workHours, lang).stream()
+                .map(GymMapper::formatWorkHour)
+                .filter(line -> line != null && !line.isBlank())
+                .toList();
+    }
+
+    public static String toWorkHoursText(java.util.Collection<GymWorkHour> workHours, String lang) {
+        List<String> lines = toWorkHoursLines(workHours, lang);
+        return lines.isEmpty() ? null : String.join(" | ", lines);
+    }
+
+    private static String formatWorkHour(GymWorkHourResponse dto) {
+        if (dto == null) {
             return null;
         }
-
-        List<GymWorkHourResponse> grouped = toGroupedWorkHourDtos(workHours, lang);
-        if (grouped.isEmpty()) {
-            return null;
+        String fromTime = dto.from() != null ? dto.from().toString() : "";
+        String toTime = dto.to() != null ? dto.to().toString() : "";
+        if (!fromTime.isBlank() && !toTime.isBlank()) {
+            return dto.period() + ": " + fromTime + " - " + toTime;
         }
-
-        return grouped.stream()
-                .map(dto -> {
-                    String fromTime = dto.from() != null ? dto.from().toString() : "";
-                    String toTime = dto.to() != null ? dto.to().toString() : "";
-
-                    if (!fromTime.isBlank() && !toTime.isBlank()) {
-                        return dto.period() + ": " + fromTime + " - " + toTime;
-                    }
-                    return dto.period();
-                })
-                .collect(Collectors.joining(" | "));
+        return dto.period();
     }
 }

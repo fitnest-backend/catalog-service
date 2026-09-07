@@ -302,6 +302,25 @@ public interface GymRepository
                       g.cover_image_url = :fileId
                       OR RIGHT(g.cover_image_url, LENGTH(:fileId) + 1) = CONCAT('/', :fileId)
                   )
+                UNION ALL
+                SELECT 1 FROM gym_images gi
+                JOIN gyms g ON g.id = gi.gym_id
+                WHERE g.status = 'ACTIVE'
+                  AND gi.url IS NOT NULL
+                  AND (
+                      gi.url = :fileId
+                      OR RIGHT(gi.url, LENGTH(:fileId) + 1) = CONCAT('/', :fileId)
+                  )
+                UNION ALL
+                SELECT 1 FROM room_images ri
+                JOIN gym_rooms r ON r.id = ri.room_id
+                JOIN gyms g ON g.id = r.gym_id
+                WHERE g.status = 'ACTIVE'
+                  AND ri.picture_url IS NOT NULL
+                  AND (
+                      ri.picture_url = :fileId
+                      OR RIGHT(ri.picture_url, LENGTH(:fileId) + 1) = CONCAT('/', :fileId)
+                  )
             ) THEN TRUE ELSE FALSE END
             """, nativeQuery = true)
     boolean existsActivePublicCoverFile(@org.springframework.data.repository.query.Param("fileId") String fileId);

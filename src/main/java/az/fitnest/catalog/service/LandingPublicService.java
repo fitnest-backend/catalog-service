@@ -1,20 +1,26 @@
 package az.fitnest.catalog.service;
 
 import az.fitnest.catalog.dto.PaginatedResponse;
-import az.fitnest.catalog.dto.response.LandingGymResponse;
+import az.fitnest.catalog.dto.response.LandingGymCardResponse;
+import az.fitnest.catalog.dto.response.LandingGymDetailResponse;
 import az.fitnest.catalog.dto.response.LandingStatsResponse;
-import az.fitnest.catalog.dto.response.LandingStoreResponse;
+import az.fitnest.catalog.dto.response.LandingStoreCardResponse;
+import az.fitnest.catalog.dto.response.LandingStoreDetailResponse;
 
 public interface LandingPublicService {
     LandingStatsResponse getStats();
 
-    PaginatedResponse<LandingGymResponse> getGyms(int page, int pageSize);
+    PaginatedResponse<LandingGymCardResponse> getHomeGyms();
 
-    LandingGymResponse getGym(Long gymId);
+    PaginatedResponse<LandingGymCardResponse> getGyms(int page, int pageSize);
 
-    PaginatedResponse<LandingStoreResponse> getStores(int page, int pageSize);
+    LandingGymDetailResponse getGym(Long gymId);
 
-    LandingStoreResponse getStore(Long storeId);
+    PaginatedResponse<LandingStoreCardResponse> getHomeStores();
+
+    PaginatedResponse<LandingStoreCardResponse> getStores(int page, int pageSize);
+
+    LandingStoreDetailResponse getStore(Long storeId);
 
     boolean isPublicLandingMedia(String fileId);
 

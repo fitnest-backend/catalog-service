@@ -6,8 +6,8 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-@Schema(description = "Public store card for the landing site")
-public record LandingStoreResponse(
+@Schema(description = "Public FitStore detail. Email is included because the store page displays it.")
+public record LandingStoreDetailResponse(
         Long storeId,
         String name,
         String coverImageUrl,
@@ -16,6 +16,7 @@ public record LandingStoreResponse(
         String category,
         String phone,
         String email,
+        String workHoursText,
         List<String> discounts,
         Boolean isNew
 ) {
