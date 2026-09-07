@@ -15,4 +15,8 @@ public interface LandingPublicService {
     PaginatedResponse<LandingStoreResponse> getStores(int page, int pageSize);
 
     LandingStoreResponse getStore(Long storeId);
+
+    boolean isPublicLandingMedia(String fileId);
+
+    void streamPublicLandingMedia(String fileId, java.io.OutputStream outputStream);
 }

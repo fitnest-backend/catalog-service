@@ -17,9 +17,11 @@ import az.fitnest.catalog.model.enums.GymStatus;
 import az.fitnest.catalog.model.enums.StoreStatus;
 import az.fitnest.catalog.repository.GymRepository;
 import az.fitnest.catalog.repository.StoreRepository;
+import az.fitnest.catalog.service.FileStorageService;
 import az.fitnest.catalog.service.GymReadService;
 import az.fitnest.catalog.service.LandingPublicService;
 import az.fitnest.catalog.service.TranslationService;
+import az.fitnest.catalog.util.PublicLandingMedia;
 import az.fitnest.catalog.util.UserContext;
 import az.fitnest.order.grpc.SubscriptionPackageInfo;
 import az.fitnest.order.grpc.SubscriptionPackageOption;
@@ -50,6 +52,7 @@ public class LandingPublicServiceImpl implements LandingPublicService {
     private final StoreRepository storeRepository;
     private final TranslationService translationService;
     private final OrderServiceGrpcClient orderServiceGrpcClient;
+    private final FileStorageService fileStorageService;
 
     @Override
     @Transactional(readOnly = true)
@@ -153,7 +156,7 @@ public class LandingPublicServiceImpl implements LandingPublicService {
         return LandingGymResponse.builder()
                 .gymId(gym.getId().toString())
                 .name(localizedName)
-                .coverImageUrl(gym.getCoverImageUrl())
+                .coverImageUrl(PublicLandingMedia.toPublicUrl(gym.getCoverImageUrl()))
                 .location(location)
                 .city(city)
                 .phone(gym.getPhone())
@@ -206,11 +209,35 @@ public class LandingPublicServiceImpl implements LandingPublicService {
         return toLandingStore(store, UserContext.getUserLanguage());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    @Cacheable(value = "landing-media-public", key = "#fileId")
+    public boolean isPublicLandingMedia(String fileId) {
+        if (!PublicLandingMedia.isSafeFileId(fileId)) {
+            return false;
+        }
+        return gymRepository.existsActivePublicCoverFile(fileId)
+                || storeRepository.existsActivePublicCoverFile(fileId);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public void streamPublicLandingMedia(String fileId, java.io.OutputStream outputStream) {
+        if (!isPublicLandingMedia(fileId)) {
+            throw new ResourceNotFoundException("MEDIA_NOT_FOUND", "error.file_not_found");
+        }
+        try {
+            fileStorageService.streamFileToOutput(fileId, outputStream);
+        } catch (RuntimeException ex) {
+            throw new ResourceNotFoundException("MEDIA_NOT_FOUND", "error.file_not_found");
+        }
+    }
+
     private LandingGymResponse toLandingGym(GymMainPageResponse item, Gym gym) {
         return LandingGymResponse.builder()
                 .gymId(item.gymId())
                 .name(item.name())
-                .coverImageUrl(item.coverImageUrl())
+                .coverImageUrl(PublicLandingMedia.toPublicUrl(item.coverImageUrl()))
                 .location(item.location())
                 .city(item.city())
                 .phone(gym != null ? gym.getPhone() : null)
@@ -260,7 +287,7 @@ public class LandingPublicServiceImpl implements LandingPublicService {
         return LandingStoreResponse.builder()
                 .storeId(store.getId())
                 .name(localizedName)
-                .coverImageUrl(store.getCoverImageUrl())
+                .coverImageUrl(PublicLandingMedia.toPublicUrl(store.getCoverImageUrl()))
                 .city(city)
                 .addressText(addressText)
                 .category(store.getCategory())

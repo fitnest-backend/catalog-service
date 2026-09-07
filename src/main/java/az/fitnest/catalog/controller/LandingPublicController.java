@@ -57,4 +57,23 @@ public class LandingPublicController {
     public ResponseEntity<LandingStoreResponse> getStore(@PathVariable Long storeId) {
         return ResponseEntity.ok(landingPublicService.getStore(storeId));
     }
+
+    @Operation(
+            summary = "Public landing media",
+            description = "Streams a gym or store cover that is already published on the landing site. Other media IDs return 404.")
+    @GetMapping("/media/{fileId:[0-9]{1,32}}")
+    public ResponseEntity<org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody> streamMedia(
+            @PathVariable String fileId) {
+        if (!landingPublicService.isPublicLandingMedia(fileId)) {
+            return ResponseEntity.notFound().build();
+        }
+        org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody body = outputStream ->
+                landingPublicService.streamPublicLandingMedia(fileId, outputStream);
+        return ResponseEntity.ok()
+                .contentType(org.springframework.http.MediaType.IMAGE_JPEG)
+                .header(org.springframework.http.HttpHeaders.CONTENT_DISPOSITION, "inline")
+                .header(org.springframework.http.HttpHeaders.CACHE_CONTROL, "public, max-age=3600")
+                .header("X-Content-Type-Options", "nosniff")
+                .body(body);
+    }
 }

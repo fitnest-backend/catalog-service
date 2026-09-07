@@ -292,4 +292,17 @@ public interface GymRepository
             @org.springframework.data.repository.query.Param("userLat") Double userLat,
             @org.springframework.data.repository.query.Param("userLng") Double userLng,
             org.springframework.data.domain.Pageable pageable);
+
+    @Query(value = """
+            SELECT CASE WHEN EXISTS (
+                SELECT 1 FROM gyms g
+                WHERE g.status = 'ACTIVE'
+                  AND g.cover_image_url IS NOT NULL
+                  AND (
+                      g.cover_image_url = :fileId
+                      OR RIGHT(g.cover_image_url, LENGTH(:fileId) + 1) = CONCAT('/', :fileId)
+                  )
+            ) THEN TRUE ELSE FALSE END
+            """, nativeQuery = true)
+    boolean existsActivePublicCoverFile(@org.springframework.data.repository.query.Param("fileId") String fileId);
 }

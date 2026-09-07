@@ -332,7 +332,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "landing-stores", "landing-store-detail"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "landing-stores", "landing-store-detail", "landing-media-public"}, allEntries = true)
     public StoreDetailResponse createStore(StoreRequest request) {
         Store store = new Store();
         updateStoreFromRequest(store, request);
@@ -349,7 +349,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "landing-stores", "landing-store-detail"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "landing-stores", "landing-store-detail", "landing-media-public"}, allEntries = true)
     public StoreDetailResponse updateStore(Long storeId, StoreRequest request) {
         Store store = storeRepository.findById(storeId).orElseThrow(() -> new ResourceNotFoundException("STORE_NOT_FOUND", "error.store_not_found"));
         updateStoreFromRequest(store, request);
@@ -366,7 +366,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "landing-stores", "landing-store-detail"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "landing-stores", "landing-store-detail", "landing-media-public"}, allEntries = true)
     public void deleteStore(Long storeId) {
 
         Store store = storeRepository.findById(storeId)
@@ -494,7 +494,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "landing-stores", "landing-store-detail"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "landing-stores", "landing-store-detail", "landing-media-public"}, allEntries = true)
     public void updateStoreCoverImageUrl(Long storeId, String coverImageUrl) {
         Store store = getStoreEntityById(storeId);
         store.setCoverImageUrl(coverImageUrl);
@@ -503,7 +503,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "landing-stores", "landing-store-detail"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "stores-locations", "landing-stores", "landing-store-detail", "landing-media-public"}, allEntries = true)
     public void deleteAllStores() {
         List<Store> stores = storeRepository.findAll();
         for (Store store : stores) {
@@ -513,7 +513,7 @@ public class StoreServiceImpl implements StoreService {
 
     @Override
     @Transactional
-    @CacheEvict(value = {"admin-stores", "stores-details-base", "landing-stores", "landing-store-detail"}, allEntries = true)
+    @CacheEvict(value = {"admin-stores", "stores-details-base", "landing-stores", "landing-store-detail", "landing-media-public"}, allEntries = true)
     public void addDiscount(Long storeId, AddDiscountRequest request) {
         Store store = storeRepository.findById(storeId)
                 .orElseThrow(() -> new ResourceNotFoundException("STORE_NOT_FOUND", "error.store_not_found"));
