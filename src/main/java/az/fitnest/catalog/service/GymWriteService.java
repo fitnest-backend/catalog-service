@@ -63,6 +63,8 @@ public interface GymWriteService {
 
     SupportedServiceResponse createSupportedService(SupportedServiceRequest request, MultipartFile icon);
 
+    SupportedServiceResponse updateSupportedService(Long id, SupportedServiceRequest request, MultipartFile icon);
+
     void deleteSupportedService(Long id);
 
     GymCreateStep1Response createGymStep1(GymCreateStep1Request request);

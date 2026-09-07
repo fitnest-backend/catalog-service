@@ -633,6 +633,16 @@ public class GymAdminController {
         return ResponseEntity.status(HttpStatus.CREATED).body(gymWriteService.createSupportedService(request, icon));
     }
 
+    @Operation(summary = "Dəstəklənən xidməti yeniləyin", description = "Mövcud xidmətin adını və/və ya ikonunu yeniləyir.")
+    @PreAuthorize("hasRole('ADMIN')")
+    @PutMapping(value = "/v1/admin/gyms/services/{id}", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<az.fitnest.catalog.dto.response.SupportedServiceResponse> updateSupportedService(
+            @PathVariable Long id,
+            @RequestPart("data") @Valid az.fitnest.catalog.dto.request.SupportedServiceRequest request,
+            @RequestPart(value = "icon", required = false) MultipartFile icon) {
+        return ResponseEntity.ok(gymWriteService.updateSupportedService(id, request, icon));
+    }
+
     @Operation(summary = "Dəstəklənən xidmətləri siyahılayın", description = "Sistemdəki dəstəklənən xidmətləri qaytarır. gymId göndərilərsə həmin idman zalına aid xidmətləri qaytarır.")
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/v1/admin/gyms/services")
