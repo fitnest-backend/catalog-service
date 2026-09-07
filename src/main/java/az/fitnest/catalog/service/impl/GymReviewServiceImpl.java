@@ -266,13 +266,9 @@ public class GymReviewServiceImpl implements az.fitnest.catalog.service.GymRevie
             log.warn("Failed to fetch user {} from UserService: {}", r.getUserId(), e.getMessage());
             fullName = "User " + r.getUserId();
         }
+        // Admin UI keys off machine status (PENDING/ACCEPTED/REJECTED); keep enum name, not translated label.
         String originalStatus = r.getStatus() != null ? r.getStatus().name() : null;
-        String userLanguage = resolveUserLanguage();
-        String translatedStatus = (originalStatus != null) ? translationService.getTranslatedValue("REVIEW_STATUS", originalStatus, "name", userLanguage) : null;
-        if (translatedStatus == null) {
-            translatedStatus = originalStatus;
-        }
-        return GymMapper.toReviewDto(r, fullName, avatarUrl, translatedStatus);
+        return GymMapper.toReviewDto(r, fullName, avatarUrl, originalStatus);
     }
 
     @Transactional(readOnly = true)
@@ -284,11 +280,6 @@ public class GymReviewServiceImpl implements az.fitnest.catalog.service.GymRevie
 
     private GymReviewResponse toGymReviewDto(Review r) {
         String originalStatus = r.getStatus() != null ? r.getStatus().name() : null;
-        String userLanguage = resolveUserLanguage();
-        String translatedStatus = (originalStatus != null) ? translationService.getTranslatedValue("REVIEW_STATUS", originalStatus, "name", userLanguage) : null;
-        if (translatedStatus == null) {
-            translatedStatus = originalStatus;
-        }
         return new GymReviewResponse(
                 r.getId(),
                 r.getId() != null ? r.getId().toString() : null,
@@ -298,7 +289,7 @@ public class GymReviewServiceImpl implements az.fitnest.catalog.service.GymRevie
                         .user_id(r.getUserId() != null ? r.getUserId().toString() : null)
                         .full_name("User " + r.getUserId())
                         .build(),
-                translatedStatus,
+                originalStatus,
                 r.getCreatedDate() != null ? r.getCreatedDate().toLocalDate() : null
         );
     }
