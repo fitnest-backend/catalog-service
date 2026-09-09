@@ -4,6 +4,7 @@ import az.fitnest.catalog.model.entity.GymAdmin;
 import az.fitnest.catalog.repository.GymAdminRepository;
 import az.fitnest.catalog.repository.GymAnalyticsRepository;
 import az.fitnest.catalog.repository.GymAnalyticsRepository.PartnersKpiProjection;
+import az.fitnest.catalog.repository.GymRepository;
 import io.grpc.stub.StreamObserver;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ public class CatalogAnalyticsGrpcService extends GymServiceGrpc.GymServiceImplBa
 
     private final GymAnalyticsRepository gymAnalyticsRepository;
     private final GymAdminRepository gymAdminRepository;
+    private final GymRepository gymRepository;
 
     @Override
     public void getActivePartnersKpi(
@@ -65,6 +67,22 @@ public class CatalogAnalyticsGrpcService extends GymServiceGrpc.GymServiceImplBa
         responseObserver.onNext(
                 GetGymAdminsByUsersResponse.newBuilder()
                         .addAllAdmins(details)
+                        .build()
+        );
+        responseObserver.onCompleted();
+    }
+
+    @Override
+    public void countGymsByPackage(
+            CountGymsByPackageRequest request,
+            StreamObserver<CountGymsByPackageResponse> responseObserver
+    ) {
+        long count = request.getPackageId() == 0
+                ? 0
+                : gymRepository.countActiveGymsByPackageId(request.getPackageId());
+        responseObserver.onNext(
+                CountGymsByPackageResponse.newBuilder()
+                        .setGymCount(count)
                         .build()
         );
         responseObserver.onCompleted();

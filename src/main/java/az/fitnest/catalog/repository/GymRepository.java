@@ -232,6 +232,9 @@ public interface GymRepository
     @org.springframework.data.jpa.repository.Query("SELECT s.packageId, COUNT(DISTINCT s.gym.id) FROM GymSubscription s WHERE s.gym.status = az.fitnest.catalog.model.enums.GymStatus.ACTIVE GROUP BY s.packageId")
     List<Object[]> countGymsBySubscriptionPackageId();
 
+    @org.springframework.data.jpa.repository.Query("SELECT COUNT(DISTINCT s.gym.id) FROM GymSubscription s WHERE s.packageId = :packageId AND s.gym.status = az.fitnest.catalog.model.enums.GymStatus.ACTIVE")
+    long countActiveGymsByPackageId(@org.springframework.data.repository.query.Param("packageId") Long packageId);
+
     @org.springframework.data.jpa.repository.Query("SELECT COUNT(g) FROM Gym g WHERE " +
             "(:categoryId IS NULL OR EXISTS (SELECT mc FROM g.mainCategories mc WHERE mc.id = :categoryId) OR EXISTS (SELECT sc FROM g.subCategories sc WHERE sc.id = :categoryId)) AND " +
             "(:subscriptionId IS NULL OR EXISTS (SELECT s FROM g.subscriptions s WHERE s.packageId = :subscriptionId)) AND " +
