@@ -87,4 +87,31 @@ public class CatalogAnalyticsGrpcService extends GymServiceGrpc.GymServiceImplBa
         );
         responseObserver.onCompleted();
     }
+
+    @Override
+    public void countGymsByPackages(
+            CountGymsByPackagesRequest request,
+            StreamObserver<CountGymsByPackagesResponse> responseObserver
+    ) {
+        java.util.Map<Long, Long> byPackageId = new java.util.HashMap<>();
+        for (Object[] row : gymRepository.countGymsBySubscriptionPackageId()) {
+            if (row == null || row[0] == null || row[1] == null) {
+                continue;
+            }
+            long packageId = ((Number) row[0]).longValue();
+            long gymCount = ((Number) row[1]).longValue();
+            byPackageId.put(packageId, gymCount);
+        }
+
+        CountGymsByPackagesResponse.Builder response = CountGymsByPackagesResponse.newBuilder();
+        if (request.getPackageIdsCount() == 0) {
+            byPackageId.forEach(response::putGymCounts);
+        } else {
+            for (long packageId : request.getPackageIdsList()) {
+                response.putGymCounts(packageId, byPackageId.getOrDefault(packageId, 0L));
+            }
+        }
+        responseObserver.onNext(response.build());
+        responseObserver.onCompleted();
+    }
 }
