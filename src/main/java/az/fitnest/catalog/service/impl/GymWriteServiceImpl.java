@@ -867,7 +867,17 @@ public class GymWriteServiceImpl implements GymWriteService {
     }
 
     @Transactional
-    @CacheEvict(cacheNames = "gym-detail", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(cacheNames = {
+                    "gym-detail",
+                    "gymDetails",
+                    "admin-gyms",
+                    "gym-listings",
+                    "main-page-gyms",
+                    "gym-count-by-category",
+                    "gym-count-by-subscription"
+            }, allEntries = true)
+    })
     public void updateGymSubscriptions(Long gymId, GymCreateStep6Request request) {
         Gym gym = gymRepository.findById(gymId).orElseThrow(() -> new ResourceNotFoundException("GYM_NOT_FOUND", "error.gym_not_found"));
         updateGymSubscriptionsInternal(gym, request);
@@ -2193,7 +2203,17 @@ public class GymWriteServiceImpl implements GymWriteService {
 
     @Override
     @Transactional
-    @CacheEvict(cacheNames = "gym-detail", allEntries = true)
+    @Caching(evict = {
+            @CacheEvict(cacheNames = {
+                    "gym-detail",
+                    "gymDetails",
+                    "admin-gyms",
+                    "gym-listings",
+                    "main-page-gyms",
+                    "gym-count-by-category",
+                    "gym-count-by-subscription"
+            }, allEntries = true)
+    })
     public void updateGymSubscriptionsV2(Long gymId, GymCreateStep6RequestV2 request) {
         Gym gym = gymRepository.findById(gymId).orElseThrow(() -> new ResourceNotFoundException("GYM_NOT_FOUND", "error.gym_not_found"));
         updateGymSubscriptionsInternalV2(gym, request, Collections.emptyMap());

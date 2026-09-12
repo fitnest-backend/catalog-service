@@ -1364,10 +1364,9 @@ public class GymReadServiceImpl implements az.fitnest.catalog.service.GymReadSer
 
                 subscriptions = gym.getSubscriptions().stream()
                         .filter(sub -> sub.getPackageId() != null)
-                        .filter(sub -> idToInfo.get(sub.getPackageId()) != null)
                         .map(sub -> {
                             az.fitnest.order.grpc.PackageNameInfo info = idToInfo.get(sub.getPackageId());
-                            String localizedName = cleanPackageName(info.getName());
+                            String localizedName = info != null ? cleanPackageName(info.getName()) : null;
 
                             List<az.fitnest.catalog.dto.response.GymPlanBenefitAdminResponse> benefits = sub
                                     .getSupportedServices().stream()
@@ -2508,10 +2507,9 @@ public class GymReadServiceImpl implements az.fitnest.catalog.service.GymReadSer
 
                 subscriptions = gym.getSubscriptions().stream()
                         .filter(sub -> sub.getPackageId() != null)
-                        .filter(sub -> idToInfo.get(sub.getPackageId()) != null)
                         .map(sub -> {
                             az.fitnest.order.grpc.PackageNameInfo info = idToInfo.get(sub.getPackageId());
-                            String localizedName = cleanPackageName(info.getName());
+                            String localizedName = info != null ? cleanPackageName(info.getName()) : null;
 
                             List<az.fitnest.catalog.dto.response.GymPlanBenefitAdminResponse> benefits = sub
                                     .getSupportedServices().stream()

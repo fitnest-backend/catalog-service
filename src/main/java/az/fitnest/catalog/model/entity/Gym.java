@@ -122,7 +122,7 @@ public class Gym
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
     @org.hibernate.annotations.BatchSize(size = 20)
-    private Set<GymSubscription> subscriptions = new HashSet<>();
+    private List<GymSubscription> subscriptions = new ArrayList<>();
 
     @OneToMany(mappedBy = "gym", cascade = {CascadeType.ALL}, orphanRemoval = true)
     @Builder.Default
